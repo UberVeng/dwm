@@ -1,0 +1,1 @@
+/home/uber/Documents/dwm/config.h

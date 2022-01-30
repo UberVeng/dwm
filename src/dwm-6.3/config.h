@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-/* dwm 6.3.1 */
 
 /* appearance */
 static const unsigned int borderpx  = 6;        /* border pixel of windows */
