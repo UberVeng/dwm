@@ -116,6 +116,7 @@ static Key keys[] = {
   { MODKEY|ShiftMask,             XK_equal,               setgaps,        {.i = 0  } },
   { MODKEY,                       XK_c,                   spawn,          SHCMD("set-cursor") },
   { MODKEY|ShiftMask,             XK_r,                   spawn,          SHCMD("pkill X && startx") },
+  { MODKEY,                       XK_p,                   spawn,          SHCMD("passmenu -fn Iosevka | xargs -I{} notify {}") },
   { 0,                            XF86AudioPlay,          spawn,          SHCMD("cmus-remote -u") },
   { 0,                            XF86AudioPrev,          spawn,          SHCMD("cmus-remote -r") },
   { 0,                            XF86AudioNext,          spawn,          SHCMD("cmus-remote -n") },
