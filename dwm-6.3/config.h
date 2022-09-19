@@ -55,9 +55,15 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod4Mask
-#define ALT Mod1Mask
-#define TAGKEYS(KEY,TAG) \
+#define     XF86AudioPlay           0x1008ff14
+#define     XF86AudioNext           0x1008ff17
+#define     XF86AudioPrev           0x1008ff16
+#define     XF86AudioLowerVolume    0x1008ff11
+#define     XF86AudioRaiseVolume    0x1008ff13
+/* #define     XF86AudioMute           0x1008ff12 //not implemented */ 
+#define     MODKEY                  Mod4Mask
+#define     ALT                     Mod1Mask
+#define     TAGKEYS(KEY,TAG) \
   { MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
   { MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
   { MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
@@ -68,46 +74,56 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[]   = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]    = { "st", NULL };
-static const char *kittyTerm[]  = { "kitty", NULL };
-static const char *firefox[]    = { "firefox & notify-send -t 5000\"Firefox is starting...\"", NULL };
-static const char *slock[]      = { "slock", NULL };
+static const char *dmenucmd[]     = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *termcmd[]      = { "st", NULL };
+static const char *kittyTerm[]    = { "kitty", NULL };
+static const char *firefox[]      = { "firefox & notify-send -t 5000\"Firefox is starting...\"", NULL };
+static const char *slock[]        = { "cmus-remote -U & slock", NULL };
 
 /* alt = Mod1Mask; ctrl = ControlMask; */
 static Key keys[] = {
-  /* modifier                     key        function        argument */
-  { MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-  { MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-  { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = kittyTerm } },
-  /* { MODKEY,                       XK_n,      spawn,          {.v = firefox } }, */
-  { MODKEY,                       XK_n,      spawn,          SHCMD("notify-send -t 5000 \"Firefox is starting...\" \"\"; firefox") },
-  { ALT|ControlMask,              XK_l,      spawn,          {.v = slock } },
-  { MODKEY,                       XK_b,      togglebar,      {0} },
-  { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-  { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-  { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-  { MODKEY|ShiftMask,             XK_i,      incnmaster,     {.i = -1 } },
-  { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-  { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-  { MODKEY,                       XK_space,  zoom,           {0} },
-  { MODKEY,                       XK_Tab,    view,           {0} },
-  { MODKEY,                       XK_q,      killclient,     {0} },
-  { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-  { MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[1]} },
-  { MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+  /* modifier                     key                     function        argument */
+  { MODKEY,                       XK_d,                   spawn,          {.v = dmenucmd } },
+  { MODKEY,                       XK_Return,              spawn,          {.v = termcmd } },
+  { MODKEY|ShiftMask,             XK_Return,              spawn,          {.v = kittyTerm } },
+  /* { MODKEY,                       XK_n,                   spawn,          {.v = firefox } }, */
+  { MODKEY,                       XK_n,                   spawn,          SHCMD("notify-send -t 5000 \"Firefox is starting...\" \"\"; firefox") },
+  { ALT|ControlMask,              XK_l,                   spawn,          {.v = slock } },
+  { MODKEY,                       XK_b,                   togglebar,      {0} },
+  { MODKEY,                       XK_j,                   focusstack,     {.i = +1 } },
+  { MODKEY,                       XK_k,                   focusstack,     {.i = -1 } },
+  { MODKEY,                       XK_i,                   incnmaster,     {.i = +1 } },
+  { MODKEY|ShiftMask,             XK_i,                   incnmaster,     {.i = -1 } },
+  { MODKEY,                       XK_h,                   setmfact,       {.f = -0.05} },
+  { MODKEY,                       XK_l,                   setmfact,       {.f = +0.05} },
+  { MODKEY,                       XK_space,               zoom,           {0} },
+  { MODKEY,                       XK_Tab,                 view,           {0} },
+  { MODKEY,                       XK_q,                   killclient,     {0} },
+  { MODKEY,                       XK_t,                   setlayout,      {.v = &layouts[0]} },
+  { MODKEY|ShiftMask,             XK_f,                   setlayout,      {.v = &layouts[1]} },
+  { MODKEY,                       XK_m,                   setlayout,      {.v = &layouts[2]} },
   // { MODKEY,                       XK_space,  setlayout,      {0} },
   // { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-  { MODKEY,                       XK_f,      togglefullscr,  {0} },
-  { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-  { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-  { MODKEY,                       XK_x,      focusmon,       {.i = -1 } },
-  { MODKEY,                       XK_z,      focusmon,       {.i = +1 } },
-  { MODKEY|ShiftMask,             XK_x,      tagmon,         {.i = -1 } },
-  { MODKEY|ShiftMask,             XK_z,      tagmon,         {.i = +1 } },
-  { MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
-  { MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
-  { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
+  { MODKEY,                       XK_f,                   togglefullscr,  {0} },
+  { MODKEY,                       XK_0,                   view,           {.ui = ~0 } },
+  { MODKEY|ShiftMask,             XK_0,                   tag,            {.ui = ~0 } },
+  { MODKEY,                       XK_x,                   focusmon,       {.i = -1 } },
+  { MODKEY,                       XK_z,                   focusmon,       {.i = +1 } },
+  { MODKEY|ShiftMask,             XK_x,                   tagmon,         {.i = -1 } },
+  { MODKEY|ShiftMask,             XK_z,                   tagmon,         {.i = +1 } },
+  { MODKEY,                       XK_minus,               setgaps,        {.i = -1 } },
+  { MODKEY,                       XK_equal,               setgaps,        {.i = +1 } },
+  { MODKEY|ShiftMask,             XK_equal,               setgaps,        {.i = 0  } },
+  { MODKEY,                       XK_c,                   spawn,          SHCMD("set-cursor") },
+  { MODKEY|ShiftMask,             XK_r,                   spawn,          SHCMD("pkill X && startx") },
+  { 0,                            XF86AudioPlay,          spawn,          SHCMD("cmus-remote -u") },
+  { 0,                            XF86AudioPrev,          spawn,          SHCMD("cmus-remote -r") },
+  { 0,                            XF86AudioNext,          spawn,          SHCMD("cmus-remote -n") },
+  { ShiftMask,                    XF86AudioPrev,          spawn,          SHCMD("cmus-remote -k -10") },
+  { ShiftMask,                    XF86AudioNext,          spawn,          SHCMD("cmus-remote -k +10") },
+  { 0,                            XF86AudioRaiseVolume,   spawn,          SHCMD("cmus-remote -v +5%") },
+  { 0,                            XF86AudioLowerVolume,   spawn,          SHCMD("cmus-remote -v -5%") },
+  /* { 0,                            XF86AudioMute,          spawn,          SHCMD("cmus-remote") }, //not implemented*/
   TAGKEYS(                        XK_1,                      0)
   TAGKEYS(                        XK_2,                      1)
   TAGKEYS(                        XK_3,                      2)
